@@ -5,6 +5,7 @@ class Dfsemhas extends CI_Controller
 
     public function index()
     {
+        // test server
         $data['dfsemhas']       = $this->dfsemhas_model->tampil_data()->result();
         $this->load->view('templates_administrator/header');
         $this->load->view('templates_administrator/sidebar');
