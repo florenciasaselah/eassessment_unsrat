@@ -15,6 +15,19 @@ class Nilskripsi_kuji_model extends CI_Model
         $this->db->insert('nilskripsi_kuji', $data);
     }
 
+    public function input_data_dosen($data)
+    {
+        $this->db->insert('nilskripsi_kuji_dosen', $data);
+    }
+
+    public function get_dosen_data($id, $username)
+    {
+        $this->db->where('id_nilskripsi_kuji', $id);
+        $this->db->where('username', $username);
+        return $this->db->get('nilskripsi_kuji_dosen')->row();
+    }
+
+
     public function ambil_id_nilskripsi_kuji($id_nilskripsi_kuji)
     {
         $this->db->select('dfskripsi.nama_mhs_skripsi, dfskripsi.nim,

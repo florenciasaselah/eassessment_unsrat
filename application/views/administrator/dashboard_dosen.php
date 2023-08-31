@@ -36,7 +36,7 @@
     </div>
 
     <div class="alert alert-success" role="alert">
-        <h4 class="alert-heading">Halo, <p><strong style="text-transform: uppercase;"> <?php echo $this->session->userdata('nama'); ?> </strong>!</h4>
+        <h4 class="alert-heading">Halo, <p><strong> <?php echo $this->session->userdata('nama'); ?> </strong>!</h4>
         <p> Selamat Datang di Website <strong>e-Assessment</strong> Untuk Penilaian Tugas Akhir
             Mahasiswa Jurusan Matematika, Universitas Sam Ratulangi Manado.
             Anda Login sebagai <strong> Dosen</strong> </p>

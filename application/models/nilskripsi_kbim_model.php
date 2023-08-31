@@ -15,6 +15,18 @@ class Nilskripsi_kbim_model extends CI_Model
         $this->db->insert('nilskripsi_kbim', $data);
     }
 
+    public function input_data_dosen($data)
+    {
+        $this->db->insert('nilskripsi_kbim_dosen', $data);
+    }
+
+    public function get_dosen_data($id, $username)
+    {
+        $this->db->where('id_nilskripsi_kbim', $id);
+        $this->db->where('username', $username);
+        return $this->db->get('nilskripsi_kbim_dosen')->row();
+    }
+
     public function ambil_id_nilskripsi_kbim($id_nilskripsi_kbim)
     {
         $this->db->select('dfskripsi.nama_mhs_skripsi, dfskripsi.nim,
