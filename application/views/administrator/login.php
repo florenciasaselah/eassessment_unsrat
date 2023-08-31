@@ -47,9 +47,17 @@
                                             <?php echo form_error('username', '<div class="text-danger small ml-3">', '</div>') ?>
                                         </div>
                                         <div class="form-group">
-                                            <input type="password" class="form-control form-control-user" id="exampleInputPassword" placeholder="Your Password" name="password">
+                                            <div class="input-group">
+                                                <input type="password" class="form-control form-control-user" id="exampleInputPassword" placeholder="Your Password" name="password">
+                                                <div class="input-group-append">
+                                                    <span class="input-group-text">
+                                                        <i class="fas fa-eye" id="togglePassword"></i>
+                                                    </span>
+                                                </div>
+                                            </div>
                                             <?php echo form_error('password', '<div class="text-danger small ml-3">', '</div>') ?>
                                         </div>
+
 
 
                                         <button class="btn btn-primary btn-user btn-block">LOGIN</button>
@@ -106,5 +114,16 @@
         }
     </style>
 </body>
+
+<script>
+    const togglePassword = document.querySelector('#togglePassword');
+    const passwordInput = document.querySelector('#exampleInputPassword');
+
+    togglePassword.addEventListener('click', function() {
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
+        togglePassword.classList.toggle('fa-eye-slash');
+    });
+</script>
 
 </html>
