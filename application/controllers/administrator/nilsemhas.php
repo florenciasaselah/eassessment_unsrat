@@ -1,5 +1,4 @@
 <?php
-
 class Nilsemhas extends CI_Controller
 {
     public function index()
@@ -35,48 +34,109 @@ class Nilsemhas extends CI_Controller
 
     public function update_aksi()
     {
+        $captcha_response = $this->input->post('g-recaptcha-response');
+        $secret_key = '6Lf9nq4nAAAAAHLUNnMhTa1hXk8cE7NagLLTCcaK';
+        $response = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret=$secret_key&response=$captcha_response");
+        $responseKeys = json_decode($response, true);
+
+        if (intval($responseKeys["success"]) !== 1) {
+            // Captcha tidak valid
+            $this->session->set_flashdata('pesan', 'Captcha tidak valid. Harap coba lagi.');
+            redirect('administrator/nilsemhas');
+        }
+        $captcha_answer = $this->input->post('captcha_answer');
+
+        // Verifikasi Captcha
+        if ($captcha_answer == $sum) {
+            // Captcha benar
+            // Lanjutkan dengan proses pengisian nilai
+        } else {
+            // Captcha salah
+            $this->session->set_flashdata('pesan', '<div class="alert alert-success alert-dismissible fade show" role="alert">
+            Perhitungan Salah! Silahkan coba lagi.
+            <button type="button" class="btn btn-close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>');
+            redirect('administrator/nilsemhas');
+        }
+
         $id = $this->input->post('id_nilsemhas');
         $nilsemhas_1 = $this->input->post('nilsemhas_1');
         $nilsemhas_2 = $this->input->post('nilsemhas_2');
         $nilsemhas_3 = $this->input->post('nilsemhas_3');
 
+        // Mendapatkan nama dari sesi atau sumber lainnya
+        $username = $this->session->userdata('username');
+        $nama = $this->session->userdata('nama');
+        $id_user = $this->session->userdata('id_user');
 
-        // Menghitung nilai total
-        $nilsemhas_total = $nilsemhas_1 * 0.1 + $nilsemhas_2 * 0.3 + $nilsemhas_3 * 0.6;
+        // Cek apakah dosen telah melakukan pengisian sebelumnya
+        $existing_dosen_data = $this->nilsemhas_model->get_dosen_data($id, $username);
+        if (!$existing_dosen_data) {
+            // Dosen belum melakukan pengisian, lanjutkan
+            $pengisian_count = $this->nilsemhas_model->get_pengisian_count($id); // Mengambil jumlah pengisian dari database
+            $max_pengisian = 6; // Jumlah maksimal pengisian oleh dosen
 
-        // Cek jumlah pengisian nilai oleh dosen
-        $pengisian_count = $this->nilsemhas_model->get_pengisian_count($id); // Mengambil jumlah pengisian dari database
-        $max_pengisian = 6; // Jumlah maksimal pengisian oleh dosen
+            if ($pengisian_count < $max_pengisian) {
+                $existing_data = $this->nilsemhas_model->ambil_id_nilsemhas($id);
+                $existing_nilsemhas_1 = $existing_data[0]->nilsemhas_1;
+                $existing_nilsemhas_2 = $existing_data[0]->nilsemhas_2;
+                $existing_nilsemhas_3 = $existing_data[0]->nilsemhas_3;
 
-        if ($pengisian_count < $max_pengisian) {
-            $data = array(
-                'nilsemhas_1' => $nilsemhas_1,
-                'nilsemhas_2' => $nilsemhas_2,
-                'nilsemhas_3' => $nilsemhas_3,
-                'nilsemhas_total' => $nilsemhas_total
-            );
+                // Menghitung rata-rata nilai baru
+                $updated_nilsemhas_1 = ($existing_nilsemhas_1 * $pengisian_count + $nilsemhas_1) / ($pengisian_count + 1);
+                $updated_nilsemhas_2 = ($existing_nilsemhas_2 * $pengisian_count + $nilsemhas_2) / ($pengisian_count + 1);
+                $updated_nilsemhas_3 = ($existing_nilsemhas_3 * $pengisian_count + $nilsemhas_3) / ($pengisian_count + 1);
 
-            $where = array(
-                'id_nilsemhas' => $id
-            );
+                // Menghitung nilai total berdasarkan rata-rata baru
+                $nilsemhas_total = $updated_nilsemhas_1 * 0.1 + $updated_nilsemhas_2 * 0.3 + $updated_nilsemhas_3 * 0.6;
 
-            // Menyimpan data nilai ke database
-            $this->nilsemhas_model->update_data($where, $data, 'nilsemhas');
+                $data = array(
+                    'nilsemhas_1' => $updated_nilsemhas_1,
+                    'nilsemhas_2' => $updated_nilsemhas_2,
+                    'nilsemhas_3' => $updated_nilsemhas_3,
+                    'nilsemhas_total' => $nilsemhas_total
+                );
 
-            // Update jumlah pengisian
-            $this->nilsemhas_model->increment_pengisian_count($id);
+                $where = array(
+                    'id_nilsemhas' => $id
+                );
 
+                // Menyimpan data nilai ke tabel nilsemhas
+                $this->nilsemhas_model->update_data($where, $data, 'nilsemhas');
 
+                // Menyimpan data nilai ke tabel nilsemhas_dosen
+                $data_dosen = array(
+                    'id_nilsemhas' => $id,
+                    'username' => $username,
+                    'nama' => $nama,
+                    'id_user' => $id_user,
+                    'nilsemhas_1' => $nilsemhas_1,
+                    'nilsemhas_2' => $nilsemhas_2,
+                    'nilsemhas_3' => $nilsemhas_3
+                );
+                $this->nilsemhas_model->input_data_dosen($data_dosen);
 
-            $this->session->set_flashdata('pesan', '<div class="alert alert-primary alert-dismissible fade show" role="alert">
-    Nilai Seminar Hasil Berhasil Ditambahkan!
+                // Update jumlah pengisian
+                $this->nilsemhas_model->increment_pengisian_count($id);
+
+                $this->session->set_flashdata('pesan', '<div class="alert alert-success alert-dismissible fade show" role="alert">
+    Anda berhasil melakukan pengisian nilai!
     <button type="button" class="btn btn-close" data-dismiss="alert" aria-label="Close">
         <span aria-hidden="true">&times;</span>
     </button>
 </div>');
+            } else {
+                $this->session->set_flashdata('pesan', '<div class="alert alert-danger alert-dismissible fade show" role="alert">
+    Anda telah melakukan pengisian nilai sebelumnya!
+    <button type="button" class="btn btn-close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>');
+            }
         } else {
             $this->session->set_flashdata('pesan', '<div class="alert alert-danger alert-dismissible fade show" role="alert">
-    Pengisian nilai sudah mencapai batas maksimal!
+    Anda telah melakukan pengisian nilai sebelumnya!
     <button type="button" class="btn btn-close" data-dismiss="alert" aria-label="Close">
         <span aria-hidden="true">&times;</span>
     </button>

@@ -1,4 +1,12 @@
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
 <div class="container-fluid">
+
+    <!-- Tambahkan peringatan di sini -->
+    <div class="alert alert-danger" role="alert">
+        <i class="icon fas fa-exclamation-triangle"></i>
+        <strong>PERHATIAN!</strong> Harap mengisi nilai dengan benar. Pengisian nilai hanya bisa dilakukan sekali untuk setiap mahasiswa!
+    </div>
 
     <div class="alert alert-dark" role="alert">
         <i class="fas fa fa-edit"></i> Input Nilai Seminar Hasil
@@ -6,7 +14,7 @@
 
     <?php foreach ($nilsemhas as $nsh) : ?>
 
-        <form method="post" action="<?php echo base_url('administrator/nilsemhas/update_aksi') ?>">
+        <form method="post" action="<?php echo base_url('administrator/nilsemhas/update_aksi') ?>" id="captcha-form">
 
             <table class="table table-hover table-bordered table-striped">
                 <tr>
@@ -37,7 +45,7 @@
                 <p> <i> b. Pengungkapan: sistematika tulisan, ketepatan dan kejelasan ungkapan, bahasa baku yang baik dan benar</i></p>
                 <p> <i> <b> Bobot 10%</b></i></p>
                 <input type="hidden" name="id_nilsemhas" value="<?php echo $nsh->id_nilsemhas ?>">
-                <input type="number" name="nilsemhas_1" placeholder="Masukkan Nilai dari 50-100" class="form-control" min="50" max="100" value="<?php echo $nsh->nilsemhas_1 ?>">
+                <input type="number" name="nilsemhas_1" placeholder="Masukkan Nilai dari 50-100" class="form-control" min="50" max="100" value="">
             </div>
 
 
@@ -50,7 +58,7 @@
                 <p> <i> d. Cara presentasi (sikap) </i></p>
                 <p> <i> e. Ketepatan waktu</i></p>
                 <p> <i> <b> Bobot 30%</b></i></p>
-                <input type="number" name="nilsemhas_2" placeholder="Masukkan Nilai dari 50-100" class="form-control" min="50" max="100" value="<?php echo $nsh->nilsemhas_2 ?>">
+                <input type="number" name="nilsemhas_2" placeholder="Masukkan Nilai dari 50-100" class="form-control" min="50" max="100" value="">
             </div>
 
             <div class="form-group">
@@ -60,9 +68,17 @@
                 <p> <i> b. Cara menjawab</i></p>
                 <p> <i> c. Keterbukaan penyaji dalam acara tanya jawab</i></p>
                 <p> <i> <b> Bobot 60%</b></i></p>
-                <input type="number" name="nilsemhas_3" placeholder="Masukkan Nilai dari 50-100" class="form-control" min="50" max="100" value="<?php echo $nsh->nilsemhas_3 ?>">
+                <input type="number" name="nilsemhas_3" placeholder="Masukkan Nilai dari 50-100" class="form-control" min="50" max="100" value="">
             </div>
 
+            <div class="form-group">
+                <label><strong>Verifikasi Captcha</strong></label>
+                <p>Silakan hitung hasil dari penjumlahan di bawah ini:</p>
+                <p><span id="captcha-question"></span></p>
+                <input type="hidden" id="captcha-sum">
+                <input type="number" id="captcha-answer" class="form-control" required>
+            </div>
+            <div class="g-recaptcha" data-sitekey="6Lf9nq4nAAAAAOaMkxKFCi3j1YizgSEbj55TTUVF"></div>
 
             <button type="sumbit" class="btn btn-primary" value="Update">Simpan Nilai</button>
             <?php echo anchor(
@@ -73,3 +89,27 @@
 
     <?php endforeach; ?>
 </div>
+
+<script>
+    // Generate random numbers for captcha question
+    var num1 = Math.floor(Math.random() * 10) + 1;
+    var num2 = Math.floor(Math.random() * 10) + 1;
+    var sum = num1 + num2;
+
+    // Set the captcha question text
+    document.getElementById("captcha-question").textContent = num1 + " + " + num2 + " = ?";
+
+    // Store the captcha sum in a hidden field
+    document.getElementById("captcha-sum").value = sum;
+
+    // Validate captcha on form submission
+    var captchaForm = document.getElementById("captcha-form");
+    captchaForm.addEventListener("submit", function(event) {
+        var userAnswer = parseInt(document.getElementById("captcha-answer").value);
+        var captchaSum = parseInt(document.getElementById("captcha-sum").value);
+        if (userAnswer !== captchaSum) {
+            event.preventDefault(); // Prevent form submission
+            alert("Perhitungan Captcha Salah! Silahkan coba lagi.");
+        }
+    });
+</script>
