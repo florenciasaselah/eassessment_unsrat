@@ -6,7 +6,7 @@ $pdf = new FPDF();
 $pdf->AddPage();
 
 // Menambahkan logo dan teks di bagian atas halaman
-$pdf->Image(base_url('assets/img/mipa.png'), 7, 12, 25, 0); // Ganti dengan path sesuai dengan lokasi logo
+$pdf->Image(base_url('assets/img/mipa.png'), 7, 12, 25, 0);
 $pdf->SetFont('Arial', 'B', 14);
 $pdf->Cell(0, 6, 'KEMENTERIAN PENDIDIKAN, KEBUDAYAAN, RISET DAN TEKNOLOGI', 0, 1, 'R');
 $pdf->SetFont('Arial', 'B', 14);
@@ -98,7 +98,7 @@ if ($nilai_total > 70) {
 } else {
     $pdf->MultiCell(0, 4, 'TIDAK LULUS', 0, 'C');
 }
-$pdf->MultiCell(0, 5, 'Dengan nilai [' . $nilai_total . '], huruf mutu [' . $huruf_mutu . '].', 0, 'C');
+$pdf->MultiCell(0, 5, 'Dengan nilai [' . intval($nilai_total) . '], huruf mutu [' . $huruf_mutu . '].', 0, 'C');
 
 // teks berita acara
 $pdf->SetFont('Arial', 'B', 9);
@@ -157,7 +157,7 @@ $pdf->MultiCell(0, 5, '                             ', 0, 'J');
 $pdf->MultiCell(0, 5, '                             ', 0, 'J');
 
 
-
+// HALAMAN KEDUA BERITA ACARA
 
 // Menambahkan logo dan teks di bagian atas halaman
 $pdf->Image(base_url('assets/img/mipa1.png'), 7, 12, 25, 0);

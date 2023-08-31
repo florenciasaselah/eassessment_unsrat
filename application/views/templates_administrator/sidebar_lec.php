@@ -125,6 +125,10 @@
                                     <i class="nav-icon fas fa-sign-out-alt ml-2"></i>
                                     Logout
                                 </a>
+                                <a class="dropdown-item" href="<?php echo base_url('administrator/auth/ganti_password') ?>">
+                                    <i class="nav-icon fas fa-sign-out-alt ml-2"></i>
+                                    Ganti Password
+                                </a>
                             </div>
                         </li>
 
