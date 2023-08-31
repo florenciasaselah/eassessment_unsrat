@@ -1,6 +1,7 @@
-<?php 
+<?php
 
-class User_model extends CI_Model{
+class User_model extends CI_Model
+{
     public function ambil_data($id)
     {
         $this->db->where('username', $id);
