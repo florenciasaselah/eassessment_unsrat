@@ -56,4 +56,10 @@ class Login_model extends CI_Model
             redirect('administrator/auth');
         }
     }
+
+    public function update_password($where, $data, $table)
+    {
+        $this->db->where($where);
+        $this->db->update($table, $data);
+    }
 }

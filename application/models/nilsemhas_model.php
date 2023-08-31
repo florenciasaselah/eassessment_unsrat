@@ -1,5 +1,4 @@
 <?php
-
 class Nilsemhas_model extends CI_Model
 {
     public function tampil_data()
@@ -13,6 +12,18 @@ class Nilsemhas_model extends CI_Model
     public function input_data($data)
     {
         $this->db->insert('nilsemhas', $data);
+    }
+
+    public function input_data_dosen($data)
+    {
+        $this->db->insert('nilsemhas_dosen', $data);
+    }
+
+    public function get_dosen_data($id, $username)
+    {
+        $this->db->where('id_nilsemhas', $id);
+        $this->db->where('username', $username);
+        return $this->db->get('nilsemhas_dosen')->row();
     }
 
     public function ambil_id_nilsemhas($id_nilsemhas)
@@ -49,7 +60,6 @@ class Nilsemhas_model extends CI_Model
             return false;
         }
     }
-
     public function get_keyword($keyword)
     {
         $this->db->select('*');
@@ -69,8 +79,6 @@ class Nilsemhas_model extends CI_Model
         $this->db->or_like('tempat_semhas', $keyword);
         return $this->db->get()->result();
     }
-
-
 
     public function edit_data($where, $table)
     {
@@ -92,7 +100,6 @@ class Nilsemhas_model extends CI_Model
             show_error($error_message);
         }
     }
-
 
     public function get_pengisian_count($id)
     {

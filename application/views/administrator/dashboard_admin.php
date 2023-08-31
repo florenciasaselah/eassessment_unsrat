@@ -41,7 +41,5 @@
             Mahasiswa Jurusan Matematika, Universitas Sam Ratulangi Manado.
             Anda Login sebagai <strong> Admin</strong> </p>
         <hr>
-
-
     </div>
 </div>

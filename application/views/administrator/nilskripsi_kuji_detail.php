@@ -39,13 +39,8 @@
             </tr>
 
             <tr>
-                <td>Ketua Komisi Ujian Skripsi</td>
-                <td><?php echo $dt->ketua_komisi; ?></td>
-            </tr>
-
-            <tr>
-                <td>Sekretaris Komisi Ujian Skripsi</td>
-                <td><?php echo $dt->sek_komisi; ?></td>
+                <td>Pengawas</td>
+                <td><?php echo $dt->pengawas; ?></td>
             </tr>
 
             <tr>
