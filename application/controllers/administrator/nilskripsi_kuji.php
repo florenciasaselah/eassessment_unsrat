@@ -160,7 +160,7 @@ class Nilskripsi_kuji extends CI_Controller
 </div>');
             } else {
                 $this->session->set_flashdata('pesan', '<div class="alert alert-danger alert-dismissible fade show" role="alert">
-    Anda telah melakukan pengisian nilai sebelumnya!
+                Pengisian nilai telah mencapai batas maksimal!
     <button type="button" class="btn btn-close" data-dismiss="alert" aria-label="Close">
         <span aria-hidden="true">&times;</span>
     </button>
